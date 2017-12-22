@@ -4,62 +4,55 @@
 
 var box, asterisk, cloud, circle;
 
-function setup() {
+function setup() 
+{
+    var canvas = createCanvas(800, 400);
 
-  var canvas = createCanvas(800, 400);
+    canvas.parent('anim-canvas');
 
-  canvas.parent('anim-canvas');
-
-  //create 4 sprites
-  circle = createSprite(400, 200);
-  //compact way to add an image
-  circle.addImage(loadImage('public/anim/assets/plain_circle.png'));
-
-  box = createSprite(200, 200);
-  box.addAnimation('normal', 'public/anim/assets/box0001.png', 'public/anim/assets/box0003.png');
-
-  cloud = createSprite(600, 200);
-  cloud.addAnimation('normal', 'public/anim/assets/cloud_breathing0001.png', 'public/anim/assets/cloud_breathing0009.png');
-
-  asterisk = createSprite(200, 200);
-  asterisk.addAnimation('normal', 'public/anim/assets/asterisk_normal0001.png', 'public/anim/assets/asterisk_normal0003.png');
-
-  asterisk.addAnimation('round', 'public/anim/assets/asterisk_circle0006.png', 'public/anim/assets/asterisk_circle0008.png');
-
-
+    //create 4 sprites
+    alyssa = createSprite(305, 255);
+    alyssa.addAnimation('normal', 'public/anim/assets/alyssa_0000.png', 'public/anim/assets/alyssa_0002.png');
+    alyssa.addAnimation("stretch", 'public/anim/assets/alyssa_0003.png', 'public/anim/assets/alyssa_0003.png')
+    alyssa.position.x = 200;
+    alyssa.position.y = 250;
 }
 
-function draw() {
-  background(255, 255, 255);
+function draw() 
+{
+    background(120, 120, 120);
 
-  asterisk.position.x = mouseX;
-  asterisk.position.y = mouseY;
+    alyssa.debug = mouseIsPressed;
 
-  //check and resolve the inteactions between sprites
+    if (alyssa.position.y < 250)
+    {
+        alyssa.velocity.y += 1;
+        alyssa.changeAnimation("stretch");
+    }
+    else
+    {
+      alyssa.velocity.y = 0;
+    }
 
-  //sprite.overlap() returns true if overlapping occours
-  //note: by default the check is performed on the images bounding box
-  //press mouse button to visualize them
-  if(asterisk.overlap(circle))
-    asterisk.changeAnimation('round');
-  else
-    asterisk.changeAnimation('normal');
+    if (keyDown("w"))
+    {
+        if (alyssa.position.y > 120)
+        {
+          alyssa.changeAnimation("stretch");
+          alyssa.velocity.y = -15;
+        }
+    }
+    else
+    {
+        if (alyssa.position.y < 250)
+        {
+            alyssa.changeAnimation("stretch");
+        }
+        else
+        {
+            alyssa.changeAnimation("normal");
+        }
+    }
 
-  //collide also returns a true/false but it can simply be used to
-  //resolve collisions.
-  //If overlapping with box asterisk will be placed
-  //in the closest non overlapping position
-  asterisk.collide(box);
-
-  //displace is the opposite of collide, the sprite in the parameter will
-  //be pushed away but the sprite calling the function
-  asterisk.displace(cloud);
-
-  //if debug is set to true bounding boxes, centers and depths are visualized
-  asterisk.debug = mouseIsPressed;
-  circle.debug = mouseIsPressed;
-  box.debug = mouseIsPressed;
-  cloud.debug = mouseIsPressed;
-
-  drawSprites();
+    drawSprites();
 }
